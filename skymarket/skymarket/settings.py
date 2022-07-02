@@ -38,16 +38,20 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    "djoser",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
+    "drf_spectacular",
     "rest_framework",
     "users",
     "ads",
     "redoc",
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -82,9 +86,18 @@ WSGI_APPLICATION = "skymarket.wsgi.application"
 
 # TODO здесь мы настраиваем аутентификацию и пагинацию
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ),
 }
 # TODO здесь мы настраиваем Djoser
 DJOSER = {
+    "SERIALIZERS": {
+        'user_create': 'users.serializers.UserRegistrationSerializer',
+        'current_user': 'users.serializers.CurrentUserSerializer'
+    },
+    "LOGIN_FIELD": "email",
 }
 
 # Database
@@ -92,6 +105,14 @@ DJOSER = {
 
 # TODO здесь необходимо настроить подключение к БД
 DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
 }
 
 
@@ -153,3 +174,7 @@ EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
+
+SPECTACULAR_SETTINGS = {
+
+}
